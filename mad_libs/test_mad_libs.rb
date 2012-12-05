@@ -45,5 +45,20 @@ class MadLibsTests < Test::Unit::TestCase
 		my_madlib = MadLib.new('((name)) likes cheese')
 		assert_raises(KeyError){ my_madlib.get_placeholder_text('bob') }
 	end
+
+	def test_can_get_madlib_with_placeholders_substituted
+		my_madlib = MadLib.new('((name)) likes cheese')
+		my_madlib.set_placeholder_text('name', 'Annie')
+		assert_equal 'Annie likes cheese', my_madlib.get_substituted_madlib
+		
+		my_madlib = MadLib.new('My favourite food is ((favourite food)).')
+		my_madlib.set_placeholder_text('favourite food', 'pizza')
+		assert_equal 'My favourite food is pizza.', my_madlib.get_substituted_madlib
+		
+		my_madlib = MadLib.new('Big ((object))s on your toe make you say ((something you say))')
+		my_madlib.set_placeholder_text('object', 'elephant')
+		my_madlib.set_placeholder_text('something you say', 'ouch')
+		assert_equal 'Big elephants on your toe make you say ouch', my_madlib.get_substituted_madlib
+	end
 end
 
