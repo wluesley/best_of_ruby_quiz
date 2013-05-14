@@ -1,34 +1,34 @@
 # Class to read madlibs
 
+
 class MadLib
 	attr_reader :raw_madlib
+	attr_reader :placeholders
 
 	def initialize(raw_madlib)
 		@raw_madlib = raw_madlib
 		extract_placeholders
 	end
 
-	def list_placeholders
-		@placeholders.keys
-	end
-
-	def set_placeholder_text(placeholder, text)
-		if @placeholders.has_key?(placeholder) 
-			@placeholders[placeholder] = text
-		else
-			raise KeyError
+	
+	def set_placeholder_text
+		# iterate over all the placeholders, populating the text via the passed in block
+		@placeholder_text = Array.new
+		placeholders.each do |placeholder|
+			text= yield placeholder
+			@placeholder_text << text
 		end
 	end		
 
-	def get_placeholder_text(placeholder)
-		@placeholders.fetch(placeholder)
+	def get_placeholder_text
+		@placeholder_text
 	end
 	
 	def get_substituted_madlib
 		substituted_madlib = @raw_madlib 
 		# iterate over each placeholder, replacing with its text
-		@placeholders.each do |name, text|
-			substituted_madlib.gsub!(/\(\(#{name}\)\)/, text)
+		@placeholders.each_with_index do |name, index|
+			substituted_madlib.sub!(/\(\(#{name}\)\)/, @placeholder_text[index])
 		end
 		substituted_madlib	
 	end
@@ -36,8 +36,8 @@ class MadLib
 	private
 
 	def extract_placeholders
-		new_placeholders= Hash.new
-		raw_madlib.scan(/\(\((.*?)\)\)/) { |match| new_placeholders.store(match[0], nil) }
+		new_placeholders= Array.new
+		raw_madlib.scan(/\(\((.*?)\)\)/) { |match| new_placeholders << match[0] }
 		@placeholders = new_placeholders
 	end
 end
