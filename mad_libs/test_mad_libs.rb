@@ -19,6 +19,11 @@ class MadLibsTests < Test::Unit::TestCase
 		my_madlib = MadLib.new('Big ((object))s on your toe make you say ((something you say))')
 		assert_equal ['object', 'something you say'], my_madlib.list_placeholders
 	end
+	
+	def test_placeholder_extraction_multiple_with_same_name
+		my_madlib = MadLib.new('((a word)) hello ((a fruit)) hello ((a word))')
+		assert_equal ['a word', 'a fruit'], my_madlib.list_placeholders
+	end
 
 	def test_can_set_placeholders
 		my_madlib = MadLib.new('((name)) likes cheese')
@@ -59,6 +64,20 @@ class MadLibsTests < Test::Unit::TestCase
 		my_madlib.set_placeholder_text('object', 'elephant')
 		my_madlib.set_placeholder_text('something you say', 'ouch')
 		assert_equal 'Big elephants on your toe make you say ouch', my_madlib.get_substituted_madlib
+	end
+	
+	def test_placeholder_substitution_across_lines
+		my_madlib = MadLib.new("Big ((object))s on your toe\nmake you say ((something you say))")
+		my_madlib.set_placeholder_text('object', 'elephant')
+		my_madlib.set_placeholder_text('something you say', 'ouch')
+		assert_equal "Big elephants on your toe\nmake you say ouch", my_madlib.get_substituted_madlib
+	end
+	
+	def test_placeholder_substitution_multiple_with_same_name
+		my_madlib = MadLib.new('((a word)) hello ((a fruit)) hello ((a word))')
+		my_madlib.set_placeholder_text('a word', 'plinth')
+		my_madlib.set_placeholder_text('a fruit', 'apple')
+		assert_equal "plinth hello apple hello plinth", my_madlib.get_substituted_madlib
 	end
 end
 

@@ -28,7 +28,7 @@ class MadLib
 		substituted_madlib = @raw_madlib 
 		# iterate over each placeholder, replacing with its text
 		@placeholders.each do |name, text|
-			substituted_madlib.sub!(/\(\(#{name}\)\)/, text)
+			substituted_madlib.gsub!(/\(\(#{name}\)\)/, text)
 		end
 		substituted_madlib	
 	end
