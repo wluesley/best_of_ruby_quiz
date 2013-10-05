@@ -102,5 +102,17 @@ class MadLibsTests < Test::Unit::TestCase
 		my_madlib.get_substituted_madlib
 		assert_equal '((name)) likes cheese', my_madlib.raw_madlib
 	end
+	
+	def test_named_placeholders
+		my_madlib = MadLib.new('Our favourite language is ((gem:a gemstone)). We think ((gem)) is better than ((a gemstone))')
+		
+		placeholder_texts = ['Ruby', 'Emerald']
+		block_call_count = 0
+		my_madlib.set_placeholder_text do |placeholder|
+			block_call_count = block_call_count + 1
+			placeholder_texts[block_call_count - 1]
+		end
+		assert_equal 'Our favourite language is Ruby. We think Ruby is better than Emerald', my_madlib.get_substituted_madlib
+	end
 end
 
