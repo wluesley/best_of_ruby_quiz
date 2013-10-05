@@ -11,18 +11,23 @@ class MadLibsTests < Test::Unit::TestCase
 
 	def test_can_list_placeholders
 		my_madlib = MadLib.new('((name)) likes cheese')
-		assert_equal ['name'], my_madlib.placeholders
+		assert_equal ['name'], my_madlib.get_placeholders
 		
 		my_madlib = MadLib.new('My favourite food is ((favourite food)).')
-		assert_equal ['favourite food'], my_madlib.placeholders
+		assert_equal ['favourite food'], my_madlib.get_placeholders
 		
 		my_madlib = MadLib.new('Big ((object))s on your toe make you say ((something you say))')
-		assert_equal ['object', 'something you say'], my_madlib.placeholders
+		assert_equal ['object', 'something you say'], my_madlib.get_placeholders
 	end
 	
 	def test_can_list_multiple_placeholders_with_same_name
 		my_madlib = MadLib.new('((a word)) hello ((a fruit)) hello ((a word))')
-		assert_equal ['a word', 'a fruit', 'a word'], my_madlib.placeholders
+		assert_equal ['a word', 'a fruit', 'a word'], my_madlib.get_placeholders
+	end
+	
+	def test_can_list_placeholder_broken_across_lines
+		my_madlib = MadLib.new("Annie likes ((something made\nof chocolate))")
+		assert_equal ['something made of chocolate'], my_madlib.get_placeholders
 	end
 	
 	def test_can_set_placeholders
@@ -63,7 +68,7 @@ class MadLibsTests < Test::Unit::TestCase
 		assert_equal 'Big elephants on your toe make you say ouch', my_madlib.get_substituted_madlib
 	end
 	
-	def test_placeholder_substitution_across_lines
+	def test_placeholder_substitution_madlib_across_lines
 		my_madlib = MadLib.new("Big ((object))s on your toe\nmake you say ((something you say))")
 		placeholder_texts = ['elephant', 'ouch']
 		block_call_count = 0
@@ -72,6 +77,12 @@ class MadLibsTests < Test::Unit::TestCase
 			placeholder_texts[block_call_count - 1]
 		end
 		assert_equal "Big elephants on your toe\nmake you say ouch", my_madlib.get_substituted_madlib
+	end
+	
+	def test_placeholder_split_across_lines
+		my_madlib = MadLib.new("Annie likes ((something made\nof chocolate))")
+		my_madlib.set_placeholder_text { |placeholder| 'gooey chocolate cake' }
+		assert_equal 'Annie likes gooey chocolate cake', my_madlib.get_substituted_madlib
 	end
 	
 	def test_placeholder_substitution_multiple_with_same_name

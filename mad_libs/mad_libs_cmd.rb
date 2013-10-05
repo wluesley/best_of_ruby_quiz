@@ -12,9 +12,7 @@ class MadLibCmd
   
   def get_placeholder_text
     # iterate over each of the placeholders, getting a value from the user
-    @madlib.list_placeholders.each do | name |
-      @madlib.set_placeholder_text(name, @console.ask("Please enter #{name}")) 
-    end
+	@madlib.set_placeholder_text { |name| @console.ask("Please enter #{name}") }
   end
   
   def get_madlib

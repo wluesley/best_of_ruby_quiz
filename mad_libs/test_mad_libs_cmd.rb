@@ -9,8 +9,8 @@ class MadLibsCmdTests < Test::Unit::TestCase
 	end
 	
 	def test_can_read_multiline_madlib_from_file
-	  madlib_text = IO.read('./madlibs/Lunch_Hungers.madlib')
-	  madlib_cmd = MadLibCmd.new('./madlibs/Lunch_Hungers.madlib')
-    assert_equal madlib_text, madlib_cmd.madlib.raw_madlib
+		madlib_text = IO.read('./madlibs/Lunch_Hungers.madlib')
+		madlib_cmd = MadLibCmd.new('./madlibs/Lunch_Hungers.madlib')
+		assert_equal madlib_text, madlib_cmd.madlib.raw_madlib
 	end
 end

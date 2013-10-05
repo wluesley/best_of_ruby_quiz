@@ -3,7 +3,6 @@
 
 class MadLib
 	attr_reader :raw_madlib
-	attr_reader :placeholders
 
 	def initialize(raw_madlib)
 		@raw_madlib = raw_madlib
@@ -14,12 +13,16 @@ class MadLib
 	def set_placeholder_text
 		# iterate over all the placeholders, populating the text via the passed in block
 		@placeholder_text = Array.new
-		placeholders.each do |placeholder|
-			text= yield placeholder
+		@placeholders.each do |placeholder|
+			text= yield placeholder.gsub(/\n/, ' ')
 			@placeholder_text << text
 		end
 	end		
-
+	
+	def get_placeholders
+		@placeholders.map { |placeholder| placeholder.gsub(/\n/, ' ') }
+	end
+	
 	def get_placeholder_text
 		@placeholder_text
 	end
@@ -37,7 +40,7 @@ class MadLib
 
 	def extract_placeholders
 		new_placeholders= Array.new
-		raw_madlib.scan(/\(\((.*?)\)\)/) { |match| new_placeholders << match[0] }
+		raw_madlib.scan(/\(\((.*?)\)\)/m) { |match| new_placeholders << match[0] }
 		@placeholders = new_placeholders
 	end
 end
