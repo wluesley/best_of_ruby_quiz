@@ -95,5 +95,12 @@ class MadLibsTests < Test::Unit::TestCase
 		end
 		assert_equal "potato is better than brocolli", my_madlib.get_substituted_madlib
 	end
+	
+	def test_substitution_doesnt_change_raw_madlib
+		my_madlib = MadLib.new('((name)) likes cheese')
+		my_madlib.set_placeholder_text { |placeholder| 'Annie' }
+		my_madlib.get_substituted_madlib
+		assert_equal '((name)) likes cheese', my_madlib.raw_madlib
+	end
 end
 
