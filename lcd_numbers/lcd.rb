@@ -66,6 +66,7 @@ class NumberDigit
 			@digit = Digit.new([true, true, true, true, true, true, true])
 		when number == 9
 			@digit = Digit.new([true, true, true, true, false, true, true])
+		# Anything that isn't a single digit should raise an error.
 		else raise 'Bad initializer. Can only initialize with single digit non-negative number'
 		end
 	end
