@@ -1,24 +1,36 @@
 # Represents a horizontal row
 class HorizontalDigitRow
-	def initialize(element_on)
+	def initialize(element_on, size=1)
+		raise 'Size must be non-negative, non-zero' if size <= 0
 		@element_on = element_on
+		@size = size
 	end
 
 	def to_s
-		@element_on ? ' - ' : '   '
+		output = ' '
+
+		if @element_on then
+			output << '-' * @size
+		else
+			output << ' ' * @size
+		end
+
+		output << ' '
 	end
 end
 
 class VerticalDigitRow
-	def initialize(left_element_on, right_element_on)
+	def initialize(left_element_on, right_element_on, size=1)
+		raise 'Size must be non-negative, non-zero' if size <= 0
 		@left_element_on = left_element_on
 		@right_element_on = right_element_on
+		@size = size
 	end
 
 	def to_s
 		output = String.new
 		output << (@left_element_on ? '|' : ' ')
-		output << ' '
+		output << ' ' * @size
 		output << (@right_element_on ? '|' : ' ')
 		return output
 	end
@@ -27,19 +39,26 @@ end
 
 # Class to print a single LCD digit
 class Digit
-	def initialize(active_elements)
+	def initialize(active_elements, size=1)
 		raise 'Incorrect initialization array size' if active_elements.length != 7
+		raise 'Size must be non-negative, non-zero' if size <= 0
 
 		@rows = Array.new
-		@rows << HorizontalDigitRow.new(active_elements[0])
-		@rows << VerticalDigitRow.new(active_elements[1], active_elements[2])
-		@rows << HorizontalDigitRow.new(active_elements[3])
-		@rows << VerticalDigitRow.new(active_elements[4], active_elements[5])
-		@rows << HorizontalDigitRow.new(active_elements[6])
+		@rows << HorizontalDigitRow.new(active_elements[0], size)
+		add_vertical_rows(active_elements[1], active_elements[2], size)
+		@rows << HorizontalDigitRow.new(active_elements[3], size)
+		add_vertical_rows(active_elements[4], active_elements[5], size)
+		@rows << HorizontalDigitRow.new(active_elements[6], size)
 	end
 
 	def line_to_s(line)
 		@rows[line].to_s
+	end
+
+private
+	def add_vertical_rows(left_element_on, right_element_on, size)
+		verticalRow = VerticalDigitRow.new(left_element_on, right_element_on, size)
+		size.times { @rows << verticalRow }
 	end
 end
 
@@ -76,4 +95,3 @@ class NumberDigit
 		@digit.send(name, *args, &block)
 	end
 end
-
